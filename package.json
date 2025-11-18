@@ -1,0 +1,25 @@
+{
+  "name": "anime-ai-assistant",
+  "version": "1.0.0",
+  "description": "一个动漫风格的AI语音助手，集成DeepSeek API与语音合成技术。",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step not defined'",
+    "test": "echo 'Test step not defined'"
+  },
+  "keywords": [
+    "AI",
+    "语音助手",
+    "动漫",
+    "DeepSeek"
+  ],
+  "author": "您的名字",
+  "license": "MIT",
+  "dependencies": {
+    "deepseek-client": "^1.0.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

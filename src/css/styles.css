@@ -1,0 +1,334 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 25px 20px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.character-section {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.character-container {
+    width: 280px;
+    height: 380px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.character {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #ff9a9e, #fad0c4);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.face {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 160px;
+    background: #ffdbac;
+    border-radius: 50%;
+}
+
+.eyes {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.eye {
+    width: 30px;
+    height: 45px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.pupil {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #3a3a3a;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.mouth {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 20px;
+    background: #ff6b6b;
+    border-radius: 0 0 30px 30px;
+    transition: all 0.3s ease;
+}
+
+.hair {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 90px;
+    background: #4a2c2a;
+    border-radius: 90px 90px 0 0;
+}
+
+.body {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 160px;
+    background: #5d9bff;
+    border-radius: 70px 70px 20px 20px;
+}
+
+.interaction-section {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-container {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 20px;
+    height: 385px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 18px;
+    max-width: 85%;
+    line-height: 1.4;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-message {
+    background: rgba(255, 255, 255, 0.25);
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+}
+
+.ai-message {
+    background: rgba(106, 17, 203, 0.4);
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 50px;
+    background: #ff6b6b;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.control-btn {
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.status {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    height: 20px;
+}
+
+.talking .mouth {
+    height: 10px;
+    border-radius: 10px;
+    animation: talk 0.5s infinite alternate;
+}
+
+@keyframes talk {
+    0% { width: 40px; }
+    100% { width: 60px; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .character-section, .interaction-section {
+        width: 100%;
+    }
+}
+
+/* 自定义头像图层 */
+.avatar-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0; /* 在面部、发型之下 */
+    border-radius: inherit;
+}
+
+/* 保证面部、发型、身体在头像之上 */
+.hair, .face, .body {
+    position: absolute;
+    z-index: 2;
+}
+
+/* 如果需要，可以为上传按钮调整样式（可选） */
+#uploadLabel.control-btn {
+    cursor: pointer;
+}
+
+/* 自定义头像样式，覆盖原有人物形象 */
+.avatar-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    z-index: 3; /* 位置可调：1 在下，3 在上，根据下面的 z-index 设置 */
+    pointer-events: none;
+}
+
+/* 当存在自定义头像时，隐藏原始角色构件 */
+.character.has-avatar .hair,
+.character.has-avatar .face,
+.character.has-avatar .body {
+    display: none !important;
+}
+
+/* 如果希望头像在最上层覆盖（遮住原图），可使用更高 z-index */
+.character.has-avatar .avatar-img {
+    z-index: 3;
+}
+    
+/* 如果希望头像替代背景，只展示头像并去掉背景渐变等，可再隐藏角色容器背景（可选） */
+.character.has-avatar {
+    background: transparent !important;
+}

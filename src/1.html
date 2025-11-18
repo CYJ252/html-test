@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课堂AI语音助手</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>课堂AI语音助手</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="character-section">
+                <div class="character-container">
+                    <div class="character" id="character">
+                        <!-- 仅保留头像 -->
+                        <img id="avatarImg" class="avatar-img" alt="自定义头像" src="assets/avatars/default.png" style="display:block;">
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="control-btn" id="voiceBtn">语音输入</button>
+                    <button class="control-btn" id="resetBtn">重置对话</button>
+                </div>
+                <div class="status" id="status">准备就绪，请开始对话</div>
+            </div>
+            
+            <div class="interaction-section">
+                <div class="chat-container" id="chatContainer">
+                    <div class="message ai-message">
+                        你好！我是你的课堂AI助手。
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="输入您的问题或点击语音按钮...">
+                    <button id="sendBtn">发送</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>课堂AI语音助手 | 集成DeepSeek API与Web Speech API</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

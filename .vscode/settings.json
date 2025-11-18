@@ -1,0 +1,14 @@
+{
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "javascript.validate.enable": true,
+    "css.validate": true,
+    "html.validate.scripts": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.associations": {
+        "*.html": "html",
+        "*.css": "css",
+        "*.js": "javascript"
+    }
+}
