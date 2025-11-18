@@ -104,12 +104,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    let voices = [];
+
+    function populateVoiceList() {
+        if(typeof speechSynthesis === 'undefined') {
+            return;
+        }
+        voices = speechSynthesis.getVoices();
+        // 可以在这里打印出来看看你的浏览器支持哪些语音
+        console.log("可用的语音列表:", voices); 
+    }
+
+    populateVoiceList();
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'zh-TW';
+            
+            // --- 核心修改部分 ---
+            // 1. 查找一个中文男声
+            // 注意：'male', '男' 这些关键词取决于浏览器和操作系统的命名
+            const maleVoice = voices.find(voice => 
+                voice.lang === 'zh-TW' && 
+                (voice.name.includes('Male') || voice.name.includes('男') || voice.name.includes('Xiaochen')) // Xiaochen是Windows上常见的男声
+            );
+
+            // 2. 如果找到了，就使用它
+            if (maleVoice) {
+                utterance.voice = maleVoice;
+                console.log("已选用男声:", maleVoice.name);
+            } else {
+                // 如果没找到，就使用默认的中文语音（通常是女声）
+                utterance.lang = 'zh-TW';
+                console.log("未找到指定男声，使用默认中文语音。");
+            }
+            
+            // 其他设置保持不变
             utterance.rate = 1.5;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
