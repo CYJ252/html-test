@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recognition = new SpeechRecognition();
         recognition.continuous = false;
         recognition.interimResults = false;
-        recognition.lang = 'zh-CN';
+        recognition.lang = 'zh-TW';
         
         recognition.onstart = function() {
             isListening = true;
