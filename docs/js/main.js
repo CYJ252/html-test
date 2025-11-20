@@ -104,78 +104,92 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 全局变量
     let voices = [];
+    let voicesReady = false;
 
+    // 更健壮的填充
     function populateVoiceList() {
-        if(typeof speechSynthesis === 'undefined') {
-            return;
-        }
-        voices = speechSynthesis.getVoices();
-        // 可以在这里打印出来看看你的浏览器支持哪些语音
-        console.log("可用的语音列表:", voices); 
+        if (typeof speechSynthesis === 'undefined') return;
+        voices = speechSynthesis.getVoices() || [];
+        console.log("可用语音:", voices.map(v => `${v.name} (${v.lang})`));
+        if (voices.length > 0) voicesReady = true;
     }
 
     populateVoiceList();
-    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+    if (typeof speechSynthesis !== 'undefined') {
         speechSynthesis.onvoiceschanged = populateVoiceList;
     }
 
+    // 在 speakText 里等待 voices 就绪（超时回退）
+    async function waitVoicesReady(timeout = 2000) {
+        const start = Date.now();
+        while (!voicesReady && Date.now() - start < timeout) {
+            await new Promise(res => setTimeout(res, 100));
+        }
+    }
 
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            
-            // --- 核心修改部分 ---
-            // 1. 查找一个中文男声
-            // 注意：'male', '男' 这些关键词取决于浏览器和操作系统的命名
-            const maleVoice = voices.find(voice => 
-                voice.lang === 'zh-TW' && 
-                (voice.name.includes('Male') || voice.name.includes('男') || voice.name.includes('Xiaochen')) // Xiaochen是Windows上常见的男声
-            );
-
-            // 2. 如果找到了，就使用它
-            if (maleVoice) {
-                utterance.voice = maleVoice;
-                console.log("已选用男声:", maleVoice.name);
-            } else {
-                // 如果没找到，就使用默认的中文语音（通常是女声）
-                utterance.lang = 'zh-TW';
-                console.log("未找到指定男声，使用默认中文语音。");
-            }
-            
-            // 其他设置保持不变
-            utterance.rate = 1.5;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-            
-            utterance.onstart = function() {
-                character.classList.add('talking');
-                status.textContent = '正在朗读回复...';
-            };
-            
-            utterance.onend = function() {
-                character.classList.remove('talking');
-                status.textContent = '准备就绪';
-            };
-            
-            utterance.onerror = function(event) {
-                console.error('语音合成错误:', event);
-                character.classList.remove('talking');
-                status.textContent = '语音合成错误';
-                setTimeout(() => {
-                    status.textContent = '准备就绪';
-                }, 3000);
-            };
-            
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.warn('您的浏览器不支持语音合成');
+    // 更稳健的 speakText 实现
+    async function speakText(text) {
+        if (!('speechSynthesis' in window)) {
             status.textContent = '您的浏览器不支持语音朗读';
-            setTimeout(() => {
-                status.textContent = '准备就绪';
-            }, 3000);
+            return;
+        }
+
+        await waitVoicesReady(2000); // 等待最多 2s
+
+        // 限制与清理文本
+        if (!text || !text.trim()) return;
+        text = text.replace(/[\u200B-\u200F\uFEFF]/g, '').trim(); // 去控制字符
+
+        // 找中文语音（优先 male），宽松匹配 lang
+        const zhVoices = voices.filter(v => /^zh/.test(v.lang));
+        let chosenVoice = null;
+        if (zhVoices.length) {
+            chosenVoice = zhVoices.find(v => /男|Male|Microsoft|Xiaochen|Xiaocheng/i.test(v.name)) || zhVoices[0];
+        }
+
+        // 分片播放（如果文本非常长）
+        const maxLen = 300; // 可调整
+        const parts = [];
+        for (let i = 0; i < text.length; i += maxLen) parts.push(text.slice(i, i + maxLen));
+
+        // 播放队列，串行播放每段
+        for (const part of parts) {
+            const utter = new SpeechSynthesisUtterance(part);
+            if (chosenVoice) utter.voice = chosenVoice;
+            utter.lang = chosenVoice ? chosenVoice.lang : (zhVoices[0] ? zhVoices[0].lang : 'zh-CN');
+            utter.rate = 1.0; // 降速更稳妥
+            utter.pitch = 1.0;
+            utter.volume = 1.0;
+
+            utter.onstart = () => { character.classList.add('talking'); status.textContent = '正在朗读回复...'; };
+            utter.onend = () => { character.classList.remove('talking'); status.textContent = '准备就绪'; };
+            utter.onerror = (ev) => {
+                console.error('语音合成错误事件：', ev);
+                character.classList.remove('talking');
+                // 回退策略：如果指定 voice 导致错误，尝试不指定 voice 重试一次
+                if (chosenVoice) {
+                    console.warn('重试：不指定 voice 再试一次');
+                    utter.voice = null;
+                    utter.lang = 'zh-CN';
+                    try { window.speechSynthesis.speak(utter); } catch (e) { console.error('重试失败', e); }
+                } else {
+                    status.textContent = '语音合成错误';
+                    setTimeout(() => status.textContent = '准备就绪', 3000);
+                }
+            };
+
+            // 使用 cancel+短延迟或直接 speak（要注意不同浏览器差异）
+            window.speechSynthesis.cancel();
+            await new Promise(res => setTimeout(res, 80))
+            window.speechSynthesis.speak(utter);
+
+            // 等待该段播放结束（通过事件或轮询）再继续
+            await new Promise(resolve => {
+                utter.onend = () => { resolve(); };
+                utter.onerror = () => { resolve(); };
+            });
         }
     }
     
