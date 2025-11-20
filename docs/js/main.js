@@ -158,8 +158,8 @@ document.addEventListener('DOMContentLoaded', function() {
         for (const part of parts) {
             const utter = new SpeechSynthesisUtterance(part);
             if (chosenVoice) utter.voice = chosenVoice;
-            utter.lang = chosenVoice ? chosenVoice.lang : (zhVoices[0] ? zhVoices[0].lang : 'zh-CN');
-            utter.rate = 1.0; // 降速更稳妥
+            utter.lang = chosenVoice ? chosenVoice.lang : (zhVoices[0] ? zhVoices[0].lang : 'zh-TW');
+            utter.rate = 1.5; // 降速更稳妥
             utter.pitch = 1.0;
             utter.volume = 1.0;
 
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (chosenVoice) {
                     console.warn('重试：不指定 voice 再试一次');
                     utter.voice = null;
-                    utter.lang = 'zh-CN';
+                    utter.lang = 'zh-TW';
                     try { window.speechSynthesis.speak(utter); } catch (e) { console.error('重试失败', e); }
                 } else {
                     status.textContent = '语音合成错误';
