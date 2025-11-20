@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     resetBtn.addEventListener('click', function() {
-        chatContainer.innerHTML = '<div class="message ai-message">对话已重置！我是你的动漫AI助手，有什么可以帮你的吗？</div>';
+        chatContainer.innerHTML = '<div class="message ai-message">对话已重置！我是你的课堂AI助手，有什么可以帮你的吗？</div>';
         conversationHistory = [
             { role: "system", content: "你是一个课堂AI助手。请尽量保持回答简洁，适合语音播放。以纯文本的形式进行回答里不需要任何表情" }
         ];
